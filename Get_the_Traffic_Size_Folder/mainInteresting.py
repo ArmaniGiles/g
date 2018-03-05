@@ -9,7 +9,7 @@ count = 0
 def makeCVS(data): 
     import csv
     global count 
-    Header =  [["Traffic_Type","Message Size (bytes)","Measure Rate (msps)","Time between messages","Msg1","Msg2","Averge Time For Entire in Seconds","Design rate","Design size"]]
+    Header =  [["Traffic_Type","Message Size (bytes)","Measure Rate (msps)","Time between messages","Msg1","Msg2","Design rate","Design size"]]
     print("data",data)
     with open('Result.csv', 'a') as csv_file:
         writer = csv.writer(csv_file)
@@ -52,24 +52,21 @@ def getAvgofTrafficMessagePeriod(f):
     RecMList, SendMList,  =  [], []
     designRate = []
     table = [] 
-    d,b,c ="","",""
+    d,b,c =0,0,0
     for i in range( len(f)):
         temp_File = open("./Get_the_Traffic_Size_Folder"+"/"+f[i],"r")
         input_File = open("./Input"+"/"+A[i],"r") # Comment out here to 
     
-        dummy  = input_File.readline().split() 
-        c= dummy[9][1:]
-        b= dummy[10][:-1]
-        # for i in dummy.split():
+        dummy  = input_File.readline() 
 
-        #     if "[" in i:
-        #         c=i[1:]
-        #         print(c)
-        #     elif "]" in i:
-        #         b = i[:-1]
-        #         print(b)
-        #         #d=b/c
-        print(c,b)
+        for i in dummy.split():
+            if "[" in i:
+                c=i[1:]
+                print(c)
+            elif "]" in i:
+                b = i[:-1]
+                print(b)
+                #d=b/c
         #exit(0)                                # To here and run the code and see what happens 
                
         
@@ -78,7 +75,6 @@ def getAvgofTrafficMessagePeriod(f):
         temp_File.seek(0)
         SendMList = [datetime.strptime(word[5:], '%H:%M:%S.%f').strftime('%H:%M:%S.%f') for line in temp_File for word in line.split() if "sent>" in word]
         temp_File.seek(0)
-
 
         # import numpy as np
         # x = datetime.strptime("00:00:00.000000", '%H:%M:%S.%f') 
@@ -114,7 +110,7 @@ def getAvgofTrafficMessagePeriod(f):
         
         msgpersec= 10**len(str(mean)[2:])
 
-        table.extend((f[i],AverageSize,msgpersec, mean,Msg1,Msg2,mean*len(RecMList),c,b))
+        table.extend((f[i],AverageSize,msgpersec, mean,Msg1,Msg2))
         print("Table:",table)
 
         makeCVS([table])
